@@ -8,7 +8,7 @@ type: kubernetes
 name: build
 
 - name: Build and Push docker image
-  image: dokfish/drone-kaniko:v1.1
+  image: dokfish/drone-kaniko:v3.0
   environment:
     TAG: v1.0-${DRONE_COMMIT_SHA:0:8}-${DRONE_BUILD_NUMBER}
     BASE64_TOKEN:
@@ -19,8 +19,10 @@ name: build
     PROJECT_ID: "library"
     IMAGE_PATH: "example-app"
   commands:
-  - /workspace/entrypoint.sh
-  - /kaniko/executor -f $DOCKERFILE_PATH  -d "$REGISTRY/$PROJECT_ID/$IMAGE_PATH:$TAG"  -c dir://./ --cache
+  - /kaniko/executor -f $DOCKERFILE_PATH  -d "$REGISTRY/$PROJECT_ID/$IMAGE_PATH:$TAG"  -c dir://./  --no-push --tarPath image.tar
+  - /kaniko/entrypoint.sh
+  - /kaniko/crane push image.tar "$REGISTRY/$PROJECT_ID/$IMAGE_PATH:$TAG"
+  - rm -f image.tar
   ```
 
   The ``$BASE64_TOKEN`` has to be hashed by base64.  
