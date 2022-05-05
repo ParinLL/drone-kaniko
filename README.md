@@ -8,7 +8,7 @@ type: kubernetes
 name: build
 
 - name: Build and Push docker image
-  image: dokfish/drone-kaniko:v3.0
+  image: dokfish/drone-kaniko:v3.3
   environment:
     TAG: v1.0-${DRONE_COMMIT_SHA:0:8}-${DRONE_BUILD_NUMBER}
     BASE64_TOKEN:
